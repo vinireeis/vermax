@@ -1,13 +1,16 @@
 FROM python:3.12-slim
 
-RUN pip install poetry
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends postgresql-client && \
+    pip install --no-cache-dir poetry && \
+    poetry config virtualenvs.create false && \
 
-WORKDIR /app
+WORKDIR /src
 
-COPY pyproject.toml poetry.lock /app/
+COPY pyproject.toml poetry.lock alembic.ini /src/
 
 RUN poetry install
 
-COPY . /app
+COPY . /src
 
 CMD ["poetry", "run", "python3", "main.py"]

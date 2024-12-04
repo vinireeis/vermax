@@ -1,0 +1,49 @@
+services:
+  db:    
+    image: postgres:17
+    restart: always    
+    container_name: vermax-postgres-db
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - vermax_api_network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vermax-api
+    ports:
+      - "8000:8000"
+
+    environment:
+      LOG_LEVEL: "10"
+      POSTGRES_STRING_CONNECTION: ${POSTGRES_STRING_CONNECTION}
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    networks:
+      - vermax_api_network
+
+networks:
+  vermax_api_network:
+
+volumes:
+  postgres_data:
