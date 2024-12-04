@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlalchemy import pool
 from decouple import config
 
-from src.domain.models.orm_base.model import Base
+from src.domain.models.orm.base_model import Base
 
 
 DATABASE_URL = config("POSTGRES_STRING_CONNECTION")
