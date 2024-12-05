@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 
 from sqlalchemy import UUID, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -15,6 +16,10 @@ class AccountModel(Base):
     balance: Mapped[int] = mapped_column(Integer, default=0)
     branch_id: Mapped[int] = mapped_column(
         String(4), nullable=False, default='0001'
+    )
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        default=datetime.now(), onupdate=datetime.now()
     )
 
     user: Mapped['User'] = relationship(  # noqa: F821
