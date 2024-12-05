@@ -1,21 +1,39 @@
 from witch_doctor import InjectionType, WitchDoctor
 
-from src.externals.infrastructures.api_config.api_config_infrastructure import (  # noqa: E501
+from src.adapters.presenters.users.new_user_presenter import NewUserPresenter
+from src.adapters.repositories.users.user_repository import UserRepository
+from src.application.ports.presenters.users.i_new_user_presenter import (
+    INewUserPresenter,
+)
+from src.application.ports.repositories.users.i_user_repository import (
+    IUserRepository,
+)
+from src.application.ports.use_cases.users.i_new_user_use_case import (
+    INewUserUseCase,
+)
+from src.application.use_cases.users.new_user_use_case import NewUserUseCase
+from src.externals.infrastructures.api_config.api_config_infrastructure import (
     ApiConfigInfrastructure,
 )
-from src.externals.infrastructures.http_server_config.fastapi_http_server_config_infrastructure import (  # noqa: E501
+from src.externals.infrastructures.db_config.sqlalchemy_config_infrastructure import (
+    PostgresSqlAlchemyInfrastructure,
+)
+from src.externals.infrastructures.http_server_config.fastapi_http_server_config_infrastructure import (
     FastApiHttpServerConfigInfrastructure,
 )
-from src.externals.infrastructures.logs_config.loguru_config_infrastructure import (  # noqa: E501
+from src.externals.infrastructures.logs_config.loguru_config_infrastructure import (
     LoguruConfigInfrastructure,
 )
 from src.externals.ports.infrastructures.i_api_config_infrastructure import (
     IApiConfigInfrastructure,
 )
+from src.externals.ports.infrastructures.i_db_config_infrastructure import (
+    IDbConfigInfrastructure,
+)
 from src.externals.ports.infrastructures.i_http_config_infrastructure import (
     IHttpServerConfigInfrastructure,
 )
-from src.externals.ports.infrastructures.i_ioc_container_config_infrastructure import (  # noqa: E501
+from src.externals.ports.infrastructures.i_ioc_container_config_infrastructure import (
     IIocContainerConfigInfrastructure,
 )
 from src.externals.ports.infrastructures.i_logs_config_infrastructure import (
@@ -29,6 +47,12 @@ class WitchDoctorContainerConfigInfrastructure(
     @classmethod
     def __create_use_cases_container(cls):
         use_cases_container = WitchDoctor.container('use_cases')
+
+        use_cases_container(
+            INewUserUseCase,
+            NewUserUseCase,
+            InjectionType.SINGLETON,
+        )
 
         return use_cases_container
 
@@ -51,6 +75,11 @@ class WitchDoctorContainerConfigInfrastructure(
             LoguruConfigInfrastructure,
             InjectionType.SINGLETON,
         )
+        infrastructures_container(
+            IDbConfigInfrastructure,
+            PostgresSqlAlchemyInfrastructure,
+            InjectionType.SINGLETON,
+        )
 
         return infrastructures_container
 
@@ -58,11 +87,23 @@ class WitchDoctorContainerConfigInfrastructure(
     def __create_repositories_container(cls):
         repositories_container = WitchDoctor.container('repositories')
 
+        repositories_container(
+            IUserRepository,
+            UserRepository,
+            InjectionType.SINGLETON,
+        )
+
         return repositories_container
 
     @classmethod
     def __create_presenters_container(cls):
         extensions_container = WitchDoctor.container('presenters')
+
+        extensions_container(
+            INewUserPresenter,
+            NewUserPresenter,
+            InjectionType.SINGLETON,
+        )
 
         return extensions_container
 

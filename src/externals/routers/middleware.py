@@ -15,7 +15,7 @@ from src.domain.exceptions.externals.exception import ExternalException
 
 class Middleware:
     @staticmethod
-    def register_middleware(app: FastAPI):
+    def set_middleware(app: FastAPI):
         @app.middleware('http')
         async def process_request(
             request: Request, call_next: callable

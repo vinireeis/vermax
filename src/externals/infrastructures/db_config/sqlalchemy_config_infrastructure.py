@@ -14,7 +14,7 @@ from src.externals.ports.infrastructures.i_db_config_infrastructure import (
 )
 
 
-class SqlAlchemyInfrastructure(IDbConfigInfrastructure):
+class PostgresSqlAlchemyInfrastructure(IDbConfigInfrastructure):
     async_engine = create_async_engine(
         config('POSTGRES_STRING_CONNECTION'),
         echo=True,
