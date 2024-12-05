@@ -1,52 +1,96 @@
 from witch_doctor import WitchDoctor
 
-from src.adapters.ports.i_home_broker_controller import IHomeBrokerController
+from src.adapters.ports.controllers.i_home_broker_controller import (
+    IHomeBrokerController,
+)
 from src.application.data_types.requests.users.user_request import (
     DeleteUserResponse,
-    GetPaginatedUserResponse,
+    GetPaginatedUsersResponse,
     GetUserResponse,
     NewUserResponse,
 )
 from src.application.data_types.responses.users.user_response import (
     NewUserRequest,
 )
+from src.application.ports.presenters.users.i_delete_user_presenter import (
+    IDeleteUserPresenter,
+)
+from src.application.ports.presenters.users.i_get_users_presenter import (
+    IGetUsersPresenter,
+)
 from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
+)
+from src.application.ports.use_cases.users.i_delete_user_use_case import (
+    IDeleteUserUseCase,
+)
+from src.application.ports.use_cases.users.i_get_user_use_case import (
+    IGetUserUseCase,
 )
 from src.application.ports.use_cases.users.i_new_user_use_case import (
     INewUserUseCase,
 )
+from src.application.ports.use_cases.users.i_paginated_users_use_case import (
+    IPaginatedUsersUseCase,
+)
 
 
 class HomeBrokerController(IHomeBrokerController):
-    __new_user_presenter: INewUserPresenter
-    __new_user_use_case: INewUserUseCase
-
+    @staticmethod
     @WitchDoctor.injection
-    def __init__(
-        self,
+    async def create_new_user(
+        new_user_request: NewUserRequest,
         new_user_presenter: INewUserPresenter,
         new_user_use_case: INewUserUseCase,
-    ):
-        self.__new_user_presenter = new_user_presenter
-        self.__new_user_use_case = new_user_use_case
-
-    @classmethod
-    async def create_new_user(
-        cls, new_user_request: NewUserRequest
     ) -> NewUserResponse:
-        pass
+        dto = await new_user_use_case.create_new_user(
+            new_user_request=new_user_request
+        )
+        response = new_user_presenter.from_dto_to_output_response(user_dto=dto)
+
+        return response
 
     @classmethod
-    async def get_user_by_id(cls, user_id: int) -> GetUserResponse:
-        pass
+    @WitchDoctor.injection
+    async def get_user_by_id(
+        cls,
+        user_id: int,
+        get_users_presenter: IGetUsersPresenter,
+        get_user_use_case: IGetUserUseCase,
+    ) -> GetUserResponse:
+        dto = await get_user_use_case.get_user(user_id=user_id)
+        response = get_users_presenter.from_dto_to_output_response(
+            user_dto=dto
+        )
+
+        return response
 
     @classmethod
+    @WitchDoctor.injection
     async def get_paginated_users(
-        cls, limit: int, offset: int
-    ) -> list[GetPaginatedUserResponse]:
-        pass
+        cls,
+        limit: int,
+        offset: int,
+        get_users_presenter: IGetUsersPresenter,
+        paginated_users_use_case: IPaginatedUsersUseCase,
+    ) -> GetPaginatedUsersResponse:
+        dto = await paginated_users_use_case.get_paginated_users(
+            limit=limit, offset=offset
+        )
+        response = get_users_presenter.from_paginated_dto_to_output_response(
+            paginated_users_dto=dto
+        )
+        return response
 
     @classmethod
-    async def delete_user_by_id(cls, user_id: int) -> DeleteUserResponse:
-        pass
+    @WitchDoctor.injection
+    async def delete_user_by_id(
+        cls,
+        user_id: int,
+        delete_user_use_case: IDeleteUserUseCase,
+        delete_user_presenter: IDeleteUserPresenter,
+    ) -> DeleteUserResponse:
+        await delete_user_use_case.delete_user(user_id=user_id)
+        response = delete_user_presenter.create_output_response()
+
+        return response

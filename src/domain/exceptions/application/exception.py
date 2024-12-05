@@ -1,35 +1,31 @@
 from http import HTTPStatus
 
-from src.domain.enums.http_response.enum import InternalCodeEnum
 from src.domain.exceptions.base.exception import ApplicationException
 
 
-class InvalidProjectStatusForTaskCreationError(ApplicationException):
+class UnexpectedApplicationException(ApplicationException):
     def __init__(self, *args, **kwargs):
-        self.msg = 'Project status should be in active or planing'
-        self.status_code = HTTPStatus.UNPROCESSABLE_ENTITY
-        self.internal_code = InternalCodeEnum.INVALID_PROJECT_STATUS_ERROR
+        self.msg = 'An unexpected error has occurred.'
+        self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
         self.success = False
         super().__init__(
             self.msg,
             self.status_code,
-            self.internal_code,
             self.success,
             *args,
             **kwargs,
         )
 
 
-class InvalidAssignedUserError(ApplicationException):
-    def __init__(self, *args, **kwargs):
-        self.msg = 'One or more assigned users do not exist'
-        self.status_code = HTTPStatus.UNPROCESSABLE_ENTITY
-        self.internal_code = InternalCodeEnum.INVALID_USER_ID_ERROR
+class UserNotFoundException(ApplicationException):
+    def __init__(self, user_id, *args, **kwargs):
+        self.msg = f'User with ID {user_id} not found.'
+        self.status_code = HTTPStatus.NOT_FOUND
+
         self.success = False
         super().__init__(
             self.msg,
             self.status_code,
-            self.internal_code,
             self.success,
             *args,
             **kwargs,

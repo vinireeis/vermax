@@ -18,9 +18,9 @@ class UserNotFoundException(AdapterException):
         )
 
 
-class EmailAlreadyExistsException(AdapterException):
+class EmailOrCpfAlreadyExistsException(AdapterException):
     def __init__(self, *args, **kwargs):
-        self.msg = 'User with this email already exists.'
+        self.msg = 'User with this email or cpf already exists.'
         self.status_code = HTTPStatus.UNPROCESSABLE_ENTITY
         self.success = False
         super().__init__(

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from src.application.data_types.requests.users.user_request import (
     DeleteUserResponse,
-    GetPaginatedUserResponse,
+    GetPaginatedUsersResponse,
     GetUserResponse,
     NewUserResponse,
 )
@@ -28,7 +28,7 @@ class IHomeBrokerController(ABC):
     @abstractmethod
     async def get_paginated_users(
         cls, limit: int, offset: int
-    ) -> list[GetPaginatedUserResponse]:
+    ) -> list[GetPaginatedUsersResponse]:
         pass
 
     @classmethod

@@ -13,6 +13,7 @@ from src.domain.entities.user_entity import UserEntity
 from src.domain.exceptions.adapters.exception import (
     UnexpectedPresenterException,
 )
+from src.domain.models.accounts.account_model import AccountModel
 from src.domain.models.users.user_model import UserModel
 
 
@@ -34,12 +35,17 @@ class NewUserPresenter(INewUserPresenter):
     @staticmethod
     def from_entity_to_model(entity: UserEntity) -> UserModel:
         try:
+            account_model = AccountModel(
+                account_id=entity.account_id,
+            )
+
             user_model = UserModel(
                 name=entity.name,
                 email=entity.email,
-                password_hash=entity.password_hash,
+                password=entity.password_hash,
                 cpf=entity.cpf,
                 account_id=entity.account_id,
+                account=account_model,
             )
             return user_model
 
@@ -47,14 +53,14 @@ class NewUserPresenter(INewUserPresenter):
             raise UnexpectedPresenterException(original_error=ex)
 
     @staticmethod
-    def from_model_to_dto(user_model: UserModel) -> UserDto:
+    def from_model_to_dto(model: UserModel) -> UserDto:
         try:
             user_dto = UserDto(
-                id=user_model.id,
-                name=user_model.name,
-                email=user_model.email,
-                cpf=user_model.cpf,
-                account_id=user_model.account_id,
+                id=model.id,
+                name=model.name,
+                email=model.email,
+                cpf=model.cpf,
+                account_id=model.account_id,
             )
             return user_dto
 

@@ -9,3 +9,11 @@ class UserDto:
     email: str
     cpf: str
     account_id: UUID
+
+
+@dataclass(slots=True, frozen=True)
+class PaginatedUsersDto:
+    users: list[UserDto]
+    total: int
+    limit: int
+    offset: int

@@ -1,14 +1,11 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 
-from src.application.data_types.dtos.user_dto import UserDto
-from src.application.data_types.responses.users.user_response import (
-    NewUserRequest,
-)
+from src.application.data_types.dtos.user_dto import PaginatedUsersDto
 
 
-class INewUserUseCase(ABC):
+class IPaginatedUsersUseCase(ABC):
     @abstractmethod
-    async def create_new_user(
-        self, new_user_request: NewUserRequest
-    ) -> UserDto:
+    async def get_paginated_users(
+        self, limit: int, offset: int
+    ) -> PaginatedUsersDto:
         pass

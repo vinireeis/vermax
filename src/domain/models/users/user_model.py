@@ -1,4 +1,5 @@
 import uuid
+from dataclasses import dataclass
 from datetime import datetime
 
 from sqlalchemy import UUID, ForeignKey, Integer, String
@@ -18,17 +19,26 @@ class UserModel(Base):
     email: Mapped[str] = mapped_column(
         String(100), unique=True, nullable=False
     )
-    password_hash: Mapped[str] = mapped_column(String(128), nullable=False)
+    password: Mapped[str] = mapped_column(String(128), nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(
         default=datetime.now(), onupdate=datetime.now()
     )
+
     account_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey('accounts.account_id'), nullable=False
     )
-    account: Mapped['Account'] = relationship(  # noqa: F821
-        argument='Account',
-        back_populates='users',
+    account: Mapped['AccountModel'] = relationship(  # noqa: F821
+        argument='AccountModel',
+        back_populates='user',
         uselist=False,
         cascade='all, delete',
     )
+
+
+@dataclass(slots=True, frozen=True)
+class PaginatedUsersModel:
+    users: list[UserModel]
+    total: int
+    limit: int
+    offset: int

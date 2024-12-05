@@ -24,7 +24,7 @@ class INewUserPresenter(ABC):
 
     @staticmethod
     @abstractmethod
-    def from_model_to_dto(user_model: UserModel) -> UserDto:
+    def from_model_to_dto(model: UserModel) -> UserDto:
         pass
 
     @staticmethod

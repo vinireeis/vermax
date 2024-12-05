@@ -1,10 +1,7 @@
-from abc import abstractmethod, ABC
-
-from src.application.data_types.dtos.user_dto import UserDto
+from abc import ABC, abstractmethod
 
 
-class IGetUserUseCase(ABC):
-
+class IDeleteUserUseCase(ABC):
     @abstractmethod
-    async def get_user(self, user_id: int) -> UserDto:
+    async def delete_user(self, user_id: int):
         pass

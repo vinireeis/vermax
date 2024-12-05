@@ -16,12 +16,19 @@ class UserPayload(BaseModel):
     cpf: str
 
 
+class PaginatedUsersPayload(BaseModel):
+    users: list[UserPayload] = Field(default=list)
+    total: int
+    limit: int
+    offset: int
+
+
 class NewUserResponse(BaseApiResponse):
     payload: NewUserPayload
 
 
-class GetPaginatedUserResponse(BaseApiResponse):
-    payload: list[UserPayload] = Field(default=list)
+class GetPaginatedUsersResponse(BaseApiResponse):
+    payload: PaginatedUsersPayload
 
 
 class GetUserResponse(BaseApiResponse):

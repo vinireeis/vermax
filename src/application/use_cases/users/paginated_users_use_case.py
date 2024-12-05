@@ -1,25 +1,27 @@
 from witch_doctor import WitchDoctor
 
-from src.application.data_types.dtos.user_dto import UserDto
-from src.application.data_types.responses.users.user_response import (
-    NewUserRequest,
+from src.application.data_types.dtos.user_dto import PaginatedUsersDto
+from src.application.ports.presenters.users.i_get_users_presenter import (
+    IGetUsersPresenter,
 )
-from src.application.ports.presenters.users.i_get_users_presenter import IGetUsersPresenter
-from src.application.ports.presenters.users.i_new_user_presenter import (
-    INewUserPresenter,
+from src.application.ports.repositories.users.i_user_repository import (
+    IUserRepository,
 )
-from src.application.ports.repositories.users.i_user_repository import IUserRepository
-from src.application.ports.use_cases.users.i_get_user_use_case import IGetUserUseCase
-from src.application.ports.use_cases.users.i_new_user_use_case import (
-    INewUserUseCase,
+from src.application.ports.use_cases.users.i_paginated_users_use_case import (
+    IPaginatedUsersUseCase,
 )
-from src.domain.exceptions.application.exception import UnexpectedApplicationException
-from src.domain.exceptions.base.exception import AdapterException, DomainException, ExternalException, \
-    ApplicationException
+from src.domain.exceptions.application.exception import (
+    UnexpectedApplicationException,
+)
+from src.domain.exceptions.base.exception import (
+    AdapterException,
+    ApplicationException,
+    DomainException,
+    ExternalException,
+)
 
 
-class GetUserUseCase(IGetUserUseCase):
-
+class PaginatedUserUseCase(IPaginatedUsersUseCase):
     @WitchDoctor.injection
     def __init__(
         self,
@@ -29,22 +31,30 @@ class GetUserUseCase(IGetUserUseCase):
         self._get_user_presenter = get_users_presenter
         self._user_repository = user_repository
 
-    async def get_user(self, user_id: int) -> UserDto:
+    async def get_paginated_users(
+        self, limit: int, offset: int
+    ) -> PaginatedUsersDto:
         try:
-            user_model = await self._user_repository.get_user_by_id(
-                user_id=user_id
+            paginated_users_model = (
+                await self._user_repository.get_paginated_users(
+                    limit=limit, offset=offset
+                )
             )
 
-            user_dto = self._get_user_presenter.from_model_to_dto(
-                model=user_model
+            paginated_users_dto = (
+                self._get_user_presenter.from_paginated_model_to_dto(
+                    model=paginated_users_model
+                )
             )
 
-            return user_dto
+            return paginated_users_dto
 
         except (
-                AdapterException, DomainException,
-                ExternalException, ApplicationException
-                ) as ex:
+            AdapterException,
+            DomainException,
+            ExternalException,
+            ApplicationException,
+        ) as ex:
             raise ex
 
         except Exception as ex:

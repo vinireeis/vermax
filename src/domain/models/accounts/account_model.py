@@ -22,6 +22,6 @@ class AccountModel(Base):
         default=datetime.now(), onupdate=datetime.now()
     )
 
-    user: Mapped['User'] = relationship(  # noqa: F821
-        argument='User', back_populates='account'
+    user: Mapped['UserModel'] = relationship(  # noqa: F821
+        argument='UserModel', back_populates='account', uselist=False
     )
