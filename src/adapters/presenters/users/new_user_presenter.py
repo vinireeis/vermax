@@ -1,6 +1,6 @@
 from src.application.data_types.dtos.user_dto import UserDto
 from src.application.data_types.requests.users.user_request import (
-    NewAccountPayload,
+    NewUserPayload,
     NewUserResponse,
 )
 from src.application.data_types.responses.users.user_response import (
@@ -10,6 +10,9 @@ from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
 )
 from src.domain.entities.user_entity import UserEntity
+from src.domain.exceptions.adapters.exception import (
+    UnexpectedPresenterException,
+)
 from src.domain.models.users.user_model import UserModel
 
 
@@ -26,7 +29,7 @@ class NewUserPresenter(INewUserPresenter):
             return entity
 
         except Exception as ex:
-            raise ex
+            raise UnexpectedPresenterException(original_error=ex)
 
     @staticmethod
     def from_entity_to_model(entity: UserEntity) -> UserModel:
@@ -41,23 +44,27 @@ class NewUserPresenter(INewUserPresenter):
             return user_model
 
         except Exception as ex:
-            raise ex
+            raise UnexpectedPresenterException(original_error=ex)
 
     @staticmethod
-    def from_entity_to_output_dto(entity: UserEntity) -> UserDto:
+    def from_model_to_dto(user_model: UserModel) -> UserDto:
         try:
             user_dto = UserDto(
-                account_id=entity.account_id,
+                id=user_model.id,
+                name=user_model.name,
+                email=user_model.email,
+                cpf=user_model.cpf,
+                account_id=user_model.account_id,
             )
             return user_dto
 
         except Exception as ex:
-            raise ex
+            raise UnexpectedPresenterException(original_error=ex)
 
     @staticmethod
     def from_dto_to_output_response(user_dto: UserDto) -> NewUserResponse:
         try:
-            new_user_payload = NewAccountPayload(
+            new_user_payload = NewUserPayload(
                 account_id=user_dto.account_id,
             )
 
@@ -65,4 +72,4 @@ class NewUserPresenter(INewUserPresenter):
             return response
 
         except Exception as ex:
-            raise ex
+            raise UnexpectedPresenterException(original_error=ex)

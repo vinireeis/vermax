@@ -2,9 +2,14 @@ from uuid import UUID, uuid4
 
 from pwdlib import PasswordHash
 
+from src.domain.exceptions.domain.exception import (
+    FailToGeneratePasswordHash,
+    InvalidPassword,
+)
+
 
 class UserEntity:
-    pwd_hash = PasswordHash.recommended()
+    pwd_hash_lib = PasswordHash.recommended()
 
     def __init__(
         self,
@@ -42,10 +47,16 @@ class UserEntity:
 
     @property
     def password_hash(self):
-        return self.pwd_hash.hash(self.password)
+        try:
+            pw_hash_generated = self.pwd_hash_lib.hash(self.password)
+            return pw_hash_generated
+        except Exception as ex:
+            raise FailToGeneratePasswordHash(original_error=ex)
 
     def validate_password(self) -> bool:
-        pw_is_valid = self.pwd_hash.verify(self.password, self.password_hash)
+        pw_is_valid = self.pwd_hash_lib.verify(
+            self.password, self.password_hash
+        )
         if not pw_is_valid:
-            raise ValueError('Invalid password')
+            raise InvalidPassword()
         return pw_is_valid

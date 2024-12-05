@@ -27,7 +27,7 @@ class NewUserUseCase(INewUserUseCase):
             request=new_user_request
         )
 
-        user_dto = self.__new_user_presenter.from_entity_to_output_dto(
+        user_dto = self.__new_user_presenter.from_model_to_dto(
             entity=user_entity
         )
 

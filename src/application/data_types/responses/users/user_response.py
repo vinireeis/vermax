@@ -2,6 +2,8 @@ from re import sub
 
 from pydantic import BaseModel, EmailStr, field_validator, model_validator
 
+# noqa: PLR2004
+
 
 class NewUserRequest(BaseModel):
     name: str

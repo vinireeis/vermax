@@ -5,7 +5,7 @@ from src.application.data_types.responses.api.base_response import (
 )
 
 
-class NewAccountPayload(BaseModel):
+class NewUserPayload(BaseModel):
     account_id: UUID4
 
 
@@ -17,7 +17,7 @@ class UserPayload(BaseModel):
 
 
 class NewUserResponse(BaseApiResponse):
-    payload: NewAccountPayload
+    payload: NewUserPayload
 
 
 class GetPaginatedUserResponse(BaseApiResponse):
