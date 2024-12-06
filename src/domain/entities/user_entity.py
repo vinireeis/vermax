@@ -17,7 +17,7 @@ class UserEntity:
         email: str,
         cpf: str,
         password: str,
-        account_id: UUID = uuid4(),
+        account_id: UUID = None,
     ):
         self.__name = name
         self.__email = email
@@ -43,7 +43,7 @@ class UserEntity:
 
     @property
     def account_id(self) -> UUID:
-        return self.__account_id
+        return self.__account_id or uuid4()
 
     @property
     def password_hash(self):

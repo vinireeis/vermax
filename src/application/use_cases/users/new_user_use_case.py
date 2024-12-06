@@ -1,7 +1,7 @@
 from witch_doctor import WitchDoctor
 
 from src.application.data_types.dtos.user_dto import UserDto
-from src.application.data_types.responses.users.user_response import (
+from src.application.data_types.requests.users.user_request import (
     NewUserRequest,
 )
 from src.application.ports.presenters.users.i_new_user_presenter import (

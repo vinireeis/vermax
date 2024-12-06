@@ -1,4 +1,4 @@
-from src.application.data_types.requests.users.user_request import (
+from src.application.data_types.responses.users.user_response import (
     DeleteUserResponse,
 )
 from src.application.ports.presenters.users.i_delete_user_presenter import (

@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 
 from src.application.data_types.dtos.user_dto import UserDto
 from src.application.data_types.requests.users.user_request import (
-    NewUserResponse,
+    NewUserRequest,
 )
 from src.application.data_types.responses.users.user_response import (
-    NewUserRequest,
+    NewUserResponse,
 )
 from src.domain.entities.user_entity import UserEntity
 from src.domain.models.users.user_model import UserModel

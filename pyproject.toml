@@ -40,7 +40,7 @@ preview = true
 select = ['I', 'F', 'E', 'W', 'PL', 'PT']
 
 [tool.ruff.lint.per-file-ignores]
-"user_response.py" = ["PLR2004"]
+"user_request.py" = ["PLR2004"]
 "witch_doctor_container_config_infrastructure.py" = ["E501"]
 
 [tool.ruff.format]

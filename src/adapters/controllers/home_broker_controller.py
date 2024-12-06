@@ -4,13 +4,13 @@ from src.adapters.ports.controllers.i_home_broker_controller import (
     IHomeBrokerController,
 )
 from src.application.data_types.requests.users.user_request import (
+    NewUserRequest,
+)
+from src.application.data_types.responses.users.user_response import (
     DeleteUserResponse,
     GetPaginatedUsersResponse,
     GetUserResponse,
     NewUserResponse,
-)
-from src.application.data_types.responses.users.user_response import (
-    NewUserRequest,
 )
 from src.application.ports.presenters.users.i_delete_user_presenter import (
     IDeleteUserPresenter,

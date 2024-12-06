@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from src.application.data_types.dtos.user_dto import UserDto
-from src.application.data_types.responses.users.user_response import (
+from src.application.data_types.requests.users.user_request import (
     NewUserRequest,
 )
 

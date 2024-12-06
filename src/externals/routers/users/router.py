@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from uuid import UUID
 
 from fastapi import APIRouter, Query
 
@@ -7,14 +6,14 @@ from src.adapters.controllers.home_broker_controller import (
     HomeBrokerController,
 )
 from src.application.data_types.requests.users.user_request import (
+    NewUserRequest,
+)
+from src.application.data_types.responses.users.user_response import (
     DeleteUserResponse,
     GetPaginatedUsersResponse,
     GetUserResponse,
     NewUserResponse,
     UpdateUserResponse,
-)
-from src.application.data_types.responses.users.user_response import (
-    NewUserRequest,
 )
 
 
@@ -61,7 +60,7 @@ class UserRouter:
         response_model=GetUserResponse,
         response_model_exclude_none=True,
     )
-    async def get_user(user_id: UUID) -> GetUserResponse:
+    async def get_user(user_id: int) -> GetUserResponse:
         response = await HomeBrokerController.get_user_by_id(user_id=user_id)
         return response
 
@@ -72,7 +71,7 @@ class UserRouter:
         response_model=UpdateUserResponse,
         response_model_exclude_none=True,
     )
-    async def update_user(user_id: UUID) -> UpdateUserResponse:
+    async def update_user(user_id: int) -> UpdateUserResponse:
         pass
 
     @staticmethod
@@ -82,7 +81,7 @@ class UserRouter:
         response_model=DeleteUserResponse,
         response_model_exclude_none=True,
     )
-    async def delete_user(user_id: UUID) -> DeleteUserResponse:
+    async def delete_user(user_id: int) -> DeleteUserResponse:
         response = await HomeBrokerController.delete_user_by_id(
             user_id=user_id
         )

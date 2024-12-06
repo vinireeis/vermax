@@ -1,17 +1,43 @@
 from witch_doctor import InjectionType, WitchDoctor
 
+from src.adapters.presenters.users.delete_user_presenter import (
+    DeleteUserPresenter,
+)
+from src.adapters.presenters.users.get_users_presenter import GetUsersPresenter
 from src.adapters.presenters.users.new_user_presenter import NewUserPresenter
 from src.adapters.repositories.users.user_repository import UserRepository
+from src.application.ports.presenters.users.i_delete_user_presenter import (
+    IDeleteUserPresenter,
+)
+from src.application.ports.presenters.users.i_get_users_presenter import (
+    IGetUsersPresenter,
+)
 from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
 )
 from src.application.ports.repositories.users.i_user_repository import (
     IUserRepository,
 )
+from src.application.ports.use_cases.users.i_delete_user_use_case import (
+    IDeleteUserUseCase,
+)
+from src.application.ports.use_cases.users.i_get_user_use_case import (
+    IGetUserUseCase,
+)
 from src.application.ports.use_cases.users.i_new_user_use_case import (
     INewUserUseCase,
 )
+from src.application.ports.use_cases.users.i_paginated_users_use_case import (
+    IPaginatedUsersUseCase,
+)
+from src.application.use_cases.users.delete_user_use_case import (
+    DeleteUserUseCase,
+)
+from src.application.use_cases.users.get_user_use_case import GetUserUseCase
 from src.application.use_cases.users.new_user_use_case import NewUserUseCase
+from src.application.use_cases.users.paginated_users_use_case import (
+    PaginatedUsersUseCase,
+)
 from src.externals.infrastructures.api_config.api_config_infrastructure import (
     ApiConfigInfrastructure,
 )
@@ -51,6 +77,21 @@ class WitchDoctorContainerConfigInfrastructure(
         use_cases_container(
             INewUserUseCase,
             NewUserUseCase,
+            InjectionType.SINGLETON,
+        )
+        use_cases_container(
+            IGetUserUseCase,
+            GetUserUseCase,
+            InjectionType.SINGLETON,
+        )
+        use_cases_container(
+            IPaginatedUsersUseCase,
+            PaginatedUsersUseCase,
+            InjectionType.SINGLETON,
+        )
+        use_cases_container(
+            IDeleteUserUseCase,
+            DeleteUserUseCase,
             InjectionType.SINGLETON,
         )
 
@@ -97,15 +138,25 @@ class WitchDoctorContainerConfigInfrastructure(
 
     @classmethod
     def __create_presenters_container(cls):
-        extensions_container = WitchDoctor.container('presenters')
+        presenters_container = WitchDoctor.container('presenters')
 
-        extensions_container(
+        presenters_container(
             INewUserPresenter,
             NewUserPresenter,
             InjectionType.SINGLETON,
         )
+        presenters_container(
+            IGetUsersPresenter,
+            GetUsersPresenter,
+            InjectionType.SINGLETON,
+        )
+        presenters_container(
+            IDeleteUserPresenter,
+            DeleteUserPresenter,
+            InjectionType.SINGLETON,
+        )
 
-        return extensions_container
+        return presenters_container
 
     @classmethod
     def __create_containers(cls):

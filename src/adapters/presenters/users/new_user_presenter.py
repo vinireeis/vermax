@@ -1,10 +1,10 @@
 from src.application.data_types.dtos.user_dto import UserDto
 from src.application.data_types.requests.users.user_request import (
-    NewUserPayload,
-    NewUserResponse,
+    NewUserRequest,
 )
 from src.application.data_types.responses.users.user_response import (
-    NewUserRequest,
+    NewUserPayload,
+    NewUserResponse,
 )
 from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
@@ -72,6 +72,7 @@ class NewUserPresenter(INewUserPresenter):
         try:
             new_user_payload = NewUserPayload(
                 account_id=user_dto.account_id,
+                id=user_dto.id,
             )
 
             response = NewUserResponse(payload=new_user_payload, success=True)

@@ -1,7 +1,5 @@
-from abc import abstractmethod
-
 from src.application.data_types.dtos.user_dto import PaginatedUsersDto, UserDto
-from src.application.data_types.requests.users.user_request import (
+from src.application.data_types.responses.users.user_response import (
     GetPaginatedUsersResponse,
     GetUserResponse,
     PaginatedUsersPayload,
@@ -18,7 +16,6 @@ from src.domain.models.users.user_model import PaginatedUsersModel, UserModel
 
 class GetUsersPresenter(IGetUsersPresenter):
     @staticmethod
-    @abstractmethod
     def from_model_to_dto(model: UserModel) -> UserDto:
         try:
             user_dto = UserDto(
@@ -35,7 +32,6 @@ class GetUsersPresenter(IGetUsersPresenter):
             raise UnexpectedPresenterException(original_error=ex)
 
     @staticmethod
-    @abstractmethod
     def from_paginated_model_to_dto(
         model: PaginatedUsersModel,
     ) -> PaginatedUsersDto:
@@ -64,7 +60,6 @@ class GetUsersPresenter(IGetUsersPresenter):
             raise UnexpectedPresenterException(original_error=ex)
 
     @staticmethod
-    @abstractmethod
     def from_dto_to_output_response(user_dto: UserDto) -> GetUserResponse:
         try:
             user_payload = UserPayload(
@@ -72,6 +67,7 @@ class GetUsersPresenter(IGetUsersPresenter):
                 email=user_dto.email,
                 cpf=user_dto.cpf,
                 account_id=user_dto.account_id,
+                id=user_dto.id,
             )
             get_user_response = GetUserResponse(
                 payload=user_payload, success=True
@@ -82,7 +78,6 @@ class GetUsersPresenter(IGetUsersPresenter):
             raise UnexpectedPresenterException(original_error=ex)
 
     @staticmethod
-    @abstractmethod
     def from_paginated_dto_to_output_response(
         paginated_users_dto: PaginatedUsersDto,
     ) -> GetPaginatedUsersResponse:
@@ -93,6 +88,7 @@ class GetUsersPresenter(IGetUsersPresenter):
                     email=user.email,
                     cpf=user.cpf,
                     account_id=user.account_id,
+                    id=user.id,
                 )
                 for user in paginated_users_dto.users
             ]

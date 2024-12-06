@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.application.data_types.requests.users.user_request import (
+from src.application.data_types.responses.users.user_response import (
     DeleteUserResponse,
 )
 

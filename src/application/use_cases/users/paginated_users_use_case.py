@@ -21,7 +21,7 @@ from src.domain.exceptions.base.exception import (
 )
 
 
-class PaginatedUserUseCase(IPaginatedUsersUseCase):
+class PaginatedUsersUseCase(IPaginatedUsersUseCase):
     @WitchDoctor.injection
     def __init__(
         self,
