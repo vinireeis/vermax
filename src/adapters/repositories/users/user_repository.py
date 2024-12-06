@@ -9,6 +9,7 @@ from src.application.ports.repositories.users.i_user_repository import (
 from src.domain.exceptions.adapters.exception import (
     EmailOrCpfAlreadyExistsException,
     UnexpectedRepositoryException,
+    UserEmailNotFoundException,
     UserNotFoundException,
 )
 from src.domain.models.users.user_model import PaginatedUsersModel, UserModel
@@ -57,6 +58,21 @@ class UserRepository(IUserRepository):
             except NoResultFound as ex:
                 logger.info(ex)
                 raise UserNotFoundException(user_id)
+
+    @classmethod
+    async def get_user_by_email(cls, email: str) -> UserModel:
+        async with (
+            cls._postgres_sql_alchemy_infrastructure.get_session() as session
+        ):
+            statement = select(UserModel).where(UserModel.email == email)
+            try:
+                db_result = await session.execute(statement)
+                user_model = db_result.scalar_one()
+                return user_model
+
+            except NoResultFound as ex:
+                logger.info(ex)
+                raise UserEmailNotFoundException()
 
     @classmethod
     async def get_paginated_users(

@@ -21,7 +21,7 @@ class FastApiHttpServerConfigInfrastructure(IHttpServerConfigInfrastructure):
         )
 
     def _register_router(self):
-        router = UserRouter.get_router()
+        router = UserRouter.get_user_router()
         self._app.include_router(router, prefix=self._root)
 
     def _register_middlewares(self):

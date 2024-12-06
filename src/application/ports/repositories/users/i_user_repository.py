@@ -16,6 +16,11 @@ class IUserRepository(ABC):
 
     @classmethod
     @abstractmethod
+    async def get_user_by_email(cls, email: str) -> UserModel:
+        pass
+
+    @classmethod
+    @abstractmethod
     async def get_paginated_users(
         cls, limit: int, offset: int
     ) -> PaginatedUsersModel:

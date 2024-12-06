@@ -21,7 +21,7 @@ class UserRouter:
     __router = APIRouter(tags=['Users'])
 
     @classmethod
-    def get_router(cls):
+    def get_user_router(cls):
         return cls.__router
 
     @staticmethod

@@ -1,3 +1,4 @@
+from fastapi.security import OAuth2PasswordRequestForm
 from witch_doctor import WitchDoctor
 
 from src.adapters.ports.controllers.i_home_broker_controller import (
@@ -6,11 +7,17 @@ from src.adapters.ports.controllers.i_home_broker_controller import (
 from src.application.data_types.requests.users.user_request import (
     NewUserRequest,
 )
+from src.application.data_types.responses.auth.token_response import (
+    GetTokenResponse,
+)
 from src.application.data_types.responses.users.user_response import (
     DeleteUserResponse,
     GetPaginatedUsersResponse,
     GetUserResponse,
     NewUserResponse,
+)
+from src.application.ports.presenters.auth.i_get_token_presenter import (
+    IGetTokenPresenter,
 )
 from src.application.ports.presenters.users.i_delete_user_presenter import (
     IDeleteUserPresenter,
@@ -20,6 +27,9 @@ from src.application.ports.presenters.users.i_get_users_presenter import (
 )
 from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
+)
+from src.application.ports.use_cases.auth.i_get_token_use_case import (
+    IGetTokenUseCase,
 )
 from src.application.ports.use_cases.users.i_delete_user_use_case import (
     IDeleteUserUseCase,
@@ -93,4 +103,20 @@ class HomeBrokerController(IHomeBrokerController):
         await delete_user_use_case.delete_user(user_id=user_id)
         response = delete_user_presenter.create_output_response()
 
+        return response
+
+    @classmethod
+    @WitchDoctor.injection
+    async def get_token(
+        cls,
+        form_data: OAuth2PasswordRequestForm,
+        get_token_use_case: IGetTokenUseCase,
+        get_token_presenter: IGetTokenPresenter,
+    ) -> GetTokenResponse:
+        dto = await get_token_use_case.get_token(form_data=form_data)
+        response = (
+            get_token_presenter.from_access_token_dto_to_output_response(
+                access_token_dto=dto
+            )
+        )
         return response
