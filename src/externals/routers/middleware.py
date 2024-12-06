@@ -53,7 +53,7 @@ class Middleware:
         except Exception as ex:
             response = Middleware._build_error_response(
                 ex=ex,
-                message='Unexpected error has occurred',
+                message=str(ex) or 'Unexpected error has occurred',
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 

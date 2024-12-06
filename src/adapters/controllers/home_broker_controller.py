@@ -28,6 +28,7 @@ from src.application.ports.presenters.users.i_get_users_presenter import (
 from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
 )
+from src.application.ports.services.token.i_token_service import ITokenService
 from src.application.ports.use_cases.auth.i_get_token_use_case import (
     IGetTokenUseCase,
 )
@@ -67,7 +68,10 @@ class HomeBrokerController(IHomeBrokerController):
         user_id: int,
         get_users_presenter: IGetUsersPresenter,
         get_user_use_case: IGetUserUseCase,
+        jwt_token_service: ITokenService,
+        token: str,
     ) -> GetUserResponse:
+        await jwt_token_service.validate_token(jwt=token)
         dto = await get_user_use_case.get_user(user_id=user_id)
         response = get_users_presenter.from_dto_to_output_response(
             user_dto=dto
@@ -99,7 +103,10 @@ class HomeBrokerController(IHomeBrokerController):
         user_id: int,
         delete_user_use_case: IDeleteUserUseCase,
         delete_user_presenter: IDeleteUserPresenter,
+        jwt_token_service: ITokenService,
+        token: str,
     ) -> DeleteUserResponse:
+        await jwt_token_service.validate_token(jwt=token)
         await delete_user_use_case.delete_user(user_id=user_id)
         response = delete_user_presenter.create_output_response()
 

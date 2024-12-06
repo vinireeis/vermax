@@ -14,11 +14,11 @@ class SqlAlchemyInfrastructureException(ExternalException):
 
 
 class UnexpectedInfrastructureException(ExternalException):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, original_error=None, *args, **kwargs):
         self.msg = 'Unexpected infrastructure exception'
         self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
         self.success = False
-        self.original_error = None
+        self.original_error = original_error
         super().__init__(
             self.msg,
             self.status_code,

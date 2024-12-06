@@ -10,11 +10,14 @@ from src.domain.models.users.user_model import UserModel
 
 class UserPresenter(IUserPresenter):
     @staticmethod
-    def from_model_to_entity(user_model: UserModel) -> UserEntity:
+    def from_model_to_entity(
+        user_model: UserModel, password: str
+    ) -> UserEntity:
         try:
             entity = UserEntity(
                 name=user_model.name,
                 email=user_model.email,
+                password=password,
                 password_hash=user_model.password,
                 cpf=user_model.cpf,
                 account_id=user_model.account_id,

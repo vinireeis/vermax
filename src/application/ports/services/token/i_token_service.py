@@ -19,7 +19,7 @@ class ITokenService(ABC):
 
     @classmethod
     @abstractmethod
-    async def validate_token(cls, jwt: str) -> bool:
+    async def validate_token(cls, jwt: str):
         pass
 
     @classmethod

@@ -3,7 +3,6 @@ from uuid import UUID, uuid4
 from pwdlib import PasswordHash
 
 from src.domain.exceptions.domain.exception import (
-    FailToGeneratePasswordHash,
     InvalidPassword,
 )
 
@@ -51,14 +50,12 @@ class UserEntity:
 
     @property
     def password_hash(self):
-        try:
-            pw_hash_generated = self.pwd_hash_lib.hash(self.password)
-            return pw_hash_generated
-        except Exception as ex:
-            raise FailToGeneratePasswordHash(original_error=ex)
+        return self.__password_hash or self.pwd_hash_lib.hash(self.password)
 
-    def validate_password(self, password: str) -> bool:
-        pw_is_valid = self.pwd_hash_lib.verify(password, self.password_hash)
+    def validate_password(self) -> bool:
+        pw_is_valid = self.pwd_hash_lib.verify(
+            self.password, self.password_hash
+        )
         if not pw_is_valid:
             raise InvalidPassword()
         return pw_is_valid

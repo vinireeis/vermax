@@ -1,5 +1,6 @@
 import jwt as jwt_lib
 from decouple import config
+from jwt import ExpiredSignatureError, InvalidSignatureError
 from loguru import logger
 from witch_doctor import WitchDoctor
 
@@ -12,6 +13,10 @@ from src.application.data_types.requests.auth.jwt_request import (
 )
 from src.application.ports.presenters.auth.i_jwt_presenter import IJwtPresenter
 from src.application.ports.services.token.i_token_service import ITokenService
+from src.domain.exceptions.application.exception import (
+    InvalidTokenException,
+    TokenExpiredException,
+)
 
 
 class JwtTokenService(ITokenService):
@@ -40,13 +45,19 @@ class JwtTokenService(ITokenService):
         return access_token_payload
 
     @classmethod
-    async def validate_token(cls, jwt: str) -> bool:
+    async def validate_token(cls, jwt: str):
         try:
             jwt_lib.decode(jwt=jwt, key=cls._key, algorithms=cls._algorithm)
+
+        except ExpiredSignatureError:
+            raise TokenExpiredException()
+
+        except InvalidSignatureError:
+            raise InvalidTokenException()
+
         except Exception as ex:
             logger.info(ex)
-            return False
-        return True
+            raise InvalidTokenException()
 
     @classmethod
     async def decode_token(cls, jwt: str) -> JwtDecodedDto:
@@ -57,5 +68,4 @@ class JwtTokenService(ITokenService):
         jwt_decoded_dto = cls._jwt_presenter.from_token_decoded_raw_to_jwt_dto(
             token_decoded_raw=token_decoded_raw
         )
-
         return jwt_decoded_dto

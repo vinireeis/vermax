@@ -47,11 +47,11 @@ class EmailOrCpfAlreadyExistsException(AdapterException):
 
 
 class UnexpectedPresenterException(AdapterException):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, original_error=None, *args, **kwargs):
         self.msg = 'An unexpected error trying to convert some data.'
         self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
         self.success = False
-        self.original_error = None
+        self.original_error = original_error
         super().__init__(
             self.msg,
             self.status_code,
@@ -63,13 +63,13 @@ class UnexpectedPresenterException(AdapterException):
 
 
 class UnexpectedRepositoryException(AdapterException):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, original_error=None, *args, **kwargs):
         self.msg = (
             'An unexpected error occurred while trying to use the repository.'
         )
         self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
         self.success = False
-        self.original_error = None
+        self.original_error = original_error
         super().__init__(
             self.msg,
             self.status_code,

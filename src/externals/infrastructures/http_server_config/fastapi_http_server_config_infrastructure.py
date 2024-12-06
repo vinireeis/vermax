@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from src.externals.ports.infrastructures.i_http_config_infrastructure import (
     IHttpServerConfigInfrastructure,
 )
-from src.externals.routers.auth.routerr import AuthRouter
+from src.externals.routers.auth.router import AuthRouter
 from src.externals.routers.middleware import Middleware
 from src.externals.routers.users.router import UserRouter
 
