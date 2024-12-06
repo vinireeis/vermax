@@ -1,11 +1,18 @@
 from witch_doctor import InjectionType, WitchDoctor
 
+from src.adapters.presenters.auth.get_token_presenter import GetTokenPresenter
+from src.adapters.presenters.auth.jwt_presenter import JwtPresenter
 from src.adapters.presenters.users.delete_user_presenter import (
     DeleteUserPresenter,
 )
 from src.adapters.presenters.users.get_users_presenter import GetUsersPresenter
 from src.adapters.presenters.users.new_user_presenter import NewUserPresenter
+from src.adapters.presenters.users.user_presenter import UserPresenter
 from src.adapters.repositories.users.user_repository import UserRepository
+from src.application.ports.presenters.auth.i_get_token_presenter import (
+    IGetTokenPresenter,
+)
+from src.application.ports.presenters.auth.i_jwt_presenter import IJwtPresenter
 from src.application.ports.presenters.users.i_delete_user_presenter import (
     IDeleteUserPresenter,
 )
@@ -15,8 +22,15 @@ from src.application.ports.presenters.users.i_get_users_presenter import (
 from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
 )
+from src.application.ports.presenters.users.i_user_presenter import (
+    IUserPresenter,
+)
 from src.application.ports.repositories.users.i_user_repository import (
     IUserRepository,
+)
+from src.application.ports.services.token.i_token_service import ITokenService
+from src.application.ports.use_cases.auth.i_get_token_use_case import (
+    IGetTokenUseCase,
 )
 from src.application.ports.use_cases.users.i_delete_user_use_case import (
     IDeleteUserUseCase,
@@ -30,6 +44,8 @@ from src.application.ports.use_cases.users.i_new_user_use_case import (
 from src.application.ports.use_cases.users.i_paginated_users_use_case import (
     IPaginatedUsersUseCase,
 )
+from src.application.services.token.jwt_token_service import JwtTokenService
+from src.application.use_cases.auth.get_token_use_case import GetTokenUseCase
 from src.application.use_cases.users.delete_user_use_case import (
     DeleteUserUseCase,
 )
@@ -94,6 +110,11 @@ class WitchDoctorContainerConfigInfrastructure(
             DeleteUserUseCase,
             InjectionType.SINGLETON,
         )
+        use_cases_container(
+            IGetTokenUseCase,
+            GetTokenUseCase,
+            InjectionType.SINGLETON,
+        )
 
         return use_cases_container
 
@@ -137,6 +158,18 @@ class WitchDoctorContainerConfigInfrastructure(
         return repositories_container
 
     @classmethod
+    def __create_services_container(cls):
+        services_container = WitchDoctor.container('services')
+
+        services_container(
+            ITokenService,
+            JwtTokenService,
+            InjectionType.SINGLETON,
+        )
+
+        return services_container
+
+    @classmethod
     def __create_presenters_container(cls):
         presenters_container = WitchDoctor.container('presenters')
 
@@ -155,6 +188,21 @@ class WitchDoctorContainerConfigInfrastructure(
             DeleteUserPresenter,
             InjectionType.SINGLETON,
         )
+        presenters_container(
+            IJwtPresenter,
+            JwtPresenter,
+            InjectionType.SINGLETON,
+        )
+        presenters_container(
+            IGetTokenPresenter,
+            GetTokenPresenter,
+            InjectionType.SINGLETON,
+        )
+        presenters_container(
+            IUserPresenter,
+            UserPresenter,
+            InjectionType.SINGLETON,
+        )
 
         return presenters_container
 
@@ -164,11 +212,13 @@ class WitchDoctorContainerConfigInfrastructure(
         cls.__create_infrastructures_container()
         cls.__create_repositories_container()
         cls.__create_presenters_container()
+        cls.__create_services_container()
 
     @classmethod
     def __load_containers(cls):
         WitchDoctor.load_container('use_cases')
         WitchDoctor.load_container('infrastructures')
+        WitchDoctor.load_container('services')
         WitchDoctor.load_container('repositories')
         WitchDoctor.load_container('presenters')
 

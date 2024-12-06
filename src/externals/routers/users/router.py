@@ -1,6 +1,8 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Query
+from decouple import config
+from fastapi import APIRouter, Depends, Query
+from fastapi.security import OAuth2PasswordBearer
 
 from src.adapters.controllers.home_broker_controller import (
     HomeBrokerController,
@@ -18,14 +20,17 @@ from src.application.data_types.responses.users.user_response import (
 
 
 class UserRouter:
-    __router = APIRouter(tags=['Users'])
+    _router = APIRouter(tags=['Users'])
+    _oauth2_scheme = OAuth2PasswordBearer(
+        tokenUrl=f'{config("ROOT_PATH")}/token'
+    )
 
     @classmethod
     def get_user_router(cls):
-        return cls.__router
+        return cls._router
 
     @staticmethod
-    @__router.post(
+    @_router.post(
         path='/users',
         status_code=HTTPStatus.CREATED,
         response_model=NewUserResponse,
@@ -38,7 +43,7 @@ class UserRouter:
         return response
 
     @staticmethod
-    @__router.get(
+    @_router.get(
         path='/users',
         status_code=HTTPStatus.OK,
         response_model=GetPaginatedUsersResponse,
@@ -54,35 +59,45 @@ class UserRouter:
         return response
 
     @staticmethod
-    @__router.get(
+    @_router.get(
         path='/users/{user_id}',
         status_code=HTTPStatus.OK,
         response_model=GetUserResponse,
         response_model_exclude_none=True,
     )
-    async def get_user(user_id: int) -> GetUserResponse:
-        response = await HomeBrokerController.get_user_by_id(user_id=user_id)
+    async def get_user(
+        user_id: int, token: str = Depends(_oauth2_scheme)
+    ) -> GetUserResponse:
+        response = await HomeBrokerController.get_user_by_id(
+            user_id=user_id, token=token
+        )
         return response
 
     @staticmethod
-    @__router.put(
+    @_router.put(
         path='/users/{user_id}',
         status_code=HTTPStatus.OK,
         response_model=UpdateUserResponse,
         response_model_exclude_none=True,
     )
-    async def update_user(user_id: int) -> UpdateUserResponse:
+    async def update_user(
+        user_id: int,
+        token: str = Depends(_oauth2_scheme),
+    ) -> UpdateUserResponse:
         pass
 
     @staticmethod
-    @__router.delete(
+    @_router.delete(
         path='/users/{user_id}',
         status_code=HTTPStatus.OK,
         response_model=DeleteUserResponse,
         response_model_exclude_none=True,
     )
-    async def delete_user(user_id: int) -> DeleteUserResponse:
+    async def delete_user(
+        user_id: int,
+        token: str = Depends(_oauth2_scheme),
+    ) -> DeleteUserResponse:
         response = await HomeBrokerController.delete_user_by_id(
-            user_id=user_id
+            user_id=user_id, token=token
         )
         return response

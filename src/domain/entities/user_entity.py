@@ -11,18 +11,22 @@ from src.domain.exceptions.domain.exception import (
 class UserEntity:
     pwd_hash_lib = PasswordHash.recommended()
 
-    def __init__(
+    def __init__(  # noqa: PLR0917 PLR0913
         self,
         name: str,
         email: str,
         cpf: str,
-        password: str,
+        password: str = None,
+        password_hash: str = None,
+        user_id: int = None,
         account_id: UUID = None,
     ):
         self.__name = name
         self.__email = email
         self.__cpf = cpf
         self.__password = password
+        self.__password_hash = password_hash
+        self.__user_id = user_id
         self.__account_id = account_id
 
     @property
@@ -53,10 +57,8 @@ class UserEntity:
         except Exception as ex:
             raise FailToGeneratePasswordHash(original_error=ex)
 
-    def validate_password(self) -> bool:
-        pw_is_valid = self.pwd_hash_lib.verify(
-            self.password, self.password_hash
-        )
+    def validate_password(self, password: str) -> bool:
+        pw_is_valid = self.pwd_hash_lib.verify(password, self.password_hash)
         if not pw_is_valid:
             raise InvalidPassword()
         return pw_is_valid
