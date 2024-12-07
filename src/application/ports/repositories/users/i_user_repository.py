@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from uuid import UUID
 
 from src.application.data_types.requests.users.user_request import (
     UpdateUserRequest,
@@ -20,6 +21,11 @@ class IUserRepository(ABC):
     @classmethod
     @abstractmethod
     async def get_user_by_email(cls, email: str) -> UserModel:
+        pass
+
+    @classmethod
+    @abstractmethod
+    async def get_user_by_account_id(cls, account_id: UUID) -> UserModel:
         pass
 
     @classmethod

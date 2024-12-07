@@ -178,17 +178,11 @@ class HomeBrokerController(IHomeBrokerController):
     @WitchDoctor.injection
     async def transfer_cash(
         cls,
-        jwt_token_service: ITokenService,
         transfer_cash_use_case: ITransferCashUseCase,
         transfer_cash_presenter: ITransferCashPresenter,
         request: TransferCashRequest,
-        token: str,
     ) -> TransferCashResponse:
-        await jwt_token_service.validate_token(jwt=token)
-        decoded_token_dto = await jwt_token_service.decode_token(jwt=token)
-        dto = await transfer_cash_use_case.transfer_cash(
-            decoded_token_dto=decoded_token_dto, request=request
-        )
+        dto = await transfer_cash_use_case.transfer_cash(request=request)
         response = (
             transfer_cash_presenter.from_transaction_dto_to_output_response(
                 dto=dto

@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from loguru import logger
 from sqlalchemy import delete, func, select, update
 from sqlalchemy.exc import IntegrityError, NoResultFound
@@ -14,6 +16,7 @@ from src.domain.exceptions.adapters.exception import (
     EmailAlreadyExistsException,
     UnexpectedRepositoryException,
     UserEmailNotFoundException,
+    UserNotFoundByAccountIdException,
     UserNotFoundException,
 )
 from src.domain.models.users.user_model import PaginatedUsersModel, UserModel
@@ -79,6 +82,23 @@ class UserRepository(IUserRepository):
             except NoResultFound as ex:
                 logger.info(ex)
                 raise UserEmailNotFoundException()
+
+    @classmethod
+    async def get_user_by_account_id(cls, account_id: UUID) -> UserModel:
+        async with (
+            cls._postgres_sql_alchemy_infrastructure.get_session() as session
+        ):
+            statement = select(UserModel).where(
+                UserModel.account_id == account_id
+            )
+            try:
+                db_result = await session.execute(statement)
+                user_model = db_result.scalar_one()
+                return user_model
+
+            except NoResultFound as ex:
+                logger.info(ex)
+                raise UserNotFoundByAccountIdException()
 
     @classmethod
     async def get_paginated_users(

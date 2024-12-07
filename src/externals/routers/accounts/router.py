@@ -34,10 +34,10 @@ class AccountsRouter:
         response_model_exclude_none=True,
     )
     async def transfer_cash(
-        request: TransferCashRequest, token: str = Depends(_oauth2_scheme)
+        request: TransferCashRequest,
     ) -> TransferCashResponse:
         response = await HomeBrokerController.transfer_cash(
-            request=request, token=token
+            request=request,
         )
         return response
 

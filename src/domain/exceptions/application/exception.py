@@ -48,8 +48,8 @@ class InvalidTokenException(ApplicationException):
 
 
 class UserNotFoundException(ApplicationException):
-    def __init__(self, user_id, *args, **kwargs):
-        self.msg = f'User with ID {user_id} not found.'
+    def __init__(self, *args, **kwargs):
+        self.msg = 'User with this id not found.'
         self.status_code = HTTPStatus.NOT_FOUND
         self.success = False
         super().__init__(

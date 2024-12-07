@@ -21,7 +21,21 @@ class UserNotFoundException(AdapterException):
 class UserEmailNotFoundException(AdapterException):
     def __init__(self, *args, **kwargs):
         self.msg = 'Verify email or password and try again.'
-        self.status_code = HTTPStatus.NOT_FOUND
+        self.status_code = HTTPStatus.UNPROCESSABLE_ENTITY
+        self.success = False
+        super().__init__(
+            self.msg,
+            self.status_code,
+            self.success,
+            *args,
+            **kwargs,
+        )
+
+
+class UserNotFoundByAccountIdException(AdapterException):
+    def __init__(self, *args, **kwargs):
+        self.msg = 'User account not found.'
+        self.status_code = HTTPStatus.UNPROCESSABLE_ENTITY
         self.success = False
         super().__init__(
             self.msg,

@@ -1,7 +1,6 @@
 from loguru import logger
 from witch_doctor import WitchDoctor
 
-from src.application.data_types.dtos.jwt_dto import JwtDecodedDto
 from src.application.data_types.dtos.transaction_dto import TransactionDto
 from src.application.data_types.requests.accounts.transfer_request import (
     TransferCashRequest,
@@ -11,6 +10,9 @@ from src.application.ports.presenters.accounts.i_transfer_cash_presenter import 
 )
 from src.application.ports.repositories.accounts.accounts_repository import (
     IAccountsRepository,
+)
+from src.application.ports.repositories.users.i_user_repository import (
+    IUserRepository,
 )
 from src.application.ports.use_cases.accounts.i_transfer_cash_use_case import (
     ITransferCashUseCase,
@@ -33,20 +35,22 @@ class TransferCashUseCase(ITransferCashUseCase):
         self,
         transfer_cash_presenter: ITransferCashPresenter,
         accounts_repository: IAccountsRepository,
+        user_repository: IUserRepository,
     ):
         self._transfer_cash_presenter = transfer_cash_presenter
         self._accounts_repository = accounts_repository
+        self._user_repository = user_repository
 
     async def transfer_cash(
         self,
-        decoded_token_dto: JwtDecodedDto,
         request: TransferCashRequest,
     ) -> TransactionDto:
         try:
-            if request.origin.cpf != decoded_token_dto.cpf:
-                raise TransferOperationNotAllowedException()
+            user_model = await self._user_repository.get_user_by_account_id(
+                account_id=request.target.account_id
+            )
 
-            if request.target.account_id != decoded_token_dto.account_id:
+            if request.origin.cpf != user_model.cpf:
                 raise TransferOperationNotAllowedException()
 
             transaction_entity = self._transfer_cash_presenter.from_input_request_to_transaction_entity(  # noqa: E501

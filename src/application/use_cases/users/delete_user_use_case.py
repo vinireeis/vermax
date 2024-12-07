@@ -33,7 +33,7 @@ class DeleteUserUseCase(IDeleteUserUseCase):
             )
 
             if not user_has_deleted:
-                raise UserNotFoundException(user_id=user_id)
+                raise UserNotFoundException()
 
         except (
             AdapterException,
