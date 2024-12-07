@@ -5,21 +5,17 @@ services:
     container_name: vermax-postgres-db
     ports:
       - "5432:5432"
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
-
     networks:
       - vermax_api_network
 
@@ -28,17 +24,22 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: vermax-api
+    command: >
+      sh -c "
+      alembic upgrade head &&
+      poetry run python3 main.py"
     ports:
       - "8000:8000"
-
     environment:
       LOG_LEVEL: "10"
+      JWT_TTL: "30"
+      JWT_ALGORITHM: "HS256"
+      JWT_SECRET_KEY: "my_secret_key"
       POSTGRES_STRING_CONNECTION: ${POSTGRES_STRING_CONNECTION}
-
+    restart: always
     depends_on:
       db:
         condition: service_healthy
-
     networks:
       - vermax_api_network
 
