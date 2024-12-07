@@ -59,3 +59,17 @@ class UserNotFoundException(ApplicationException):
             *args,
             **kwargs,
         )
+
+
+class TransferOperationNotAllowedException(ApplicationException):
+    def __init__(self, *args, **kwargs):
+        self.msg = 'The origin account does not belong to the same user/CPF.'
+        self.status_code = HTTPStatus.UNPROCESSABLE_ENTITY
+        self.success = False
+        super().__init__(
+            self.msg,
+            self.status_code,
+            self.success,
+            *args,
+            **kwargs,
+        )

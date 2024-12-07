@@ -4,7 +4,6 @@ from time import time
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 from loguru import logger
-from pydantic import ValidationError
 
 from src.adapters.data_types.response.error_response import ErrorResponse
 from src.domain.exceptions.adapters.exception import AdapterException
@@ -45,7 +44,7 @@ class Middleware:
                 status_code=ex.status_code, message=ex.msg, ex=ex
             )
 
-        except ValidationError as ex:
+        except ValueError as ex:
             response = Middleware._build_error_response(
                 status_code=HTTPStatus.BAD_REQUEST, ex=ex
             )

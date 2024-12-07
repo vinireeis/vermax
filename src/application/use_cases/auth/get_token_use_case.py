@@ -46,24 +46,23 @@ class GetTokenUseCase(IGetTokenUseCase):
         GetTokenUseCase._get_token_presenter = get_token_presenter
         GetTokenUseCase._user_presenter = user_presenter
 
-    @classmethod
     async def get_token(
-        cls, form_data: OAuth2PasswordRequestForm
+        self, form_data: OAuth2PasswordRequestForm
     ) -> AccessTokenDto:
         try:
-            user_model = await cls._user_repository.get_user_by_email(
+            user_model = await self._user_repository.get_user_by_email(
                 email=form_data.username
             )
-            user_entity = cls._user_presenter.from_model_to_entity(
+            user_entity = self._user_presenter.from_model_to_entity(
                 user_model=user_model, password=form_data.password
             )
 
             user_entity.validate_password()
 
-            user_token_data_request = cls._get_token_presenter.from_input_form_to_data_encode_request(  # noqa: E501
+            user_token_data_request = self._get_token_presenter.from_input_form_to_data_encode_request(  # noqa: E501
                 user_model=user_model
             )
-            access_token_dto = await cls._jwt_token_service.generate_token(
+            access_token_dto = await self._jwt_token_service.generate_token(
                 user_token_data_request=user_token_data_request
             )
             return access_token_dto

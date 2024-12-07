@@ -26,13 +26,14 @@ class UserModel(Base):
     )
 
     account_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey('accounts.account_id'), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey('accounts.account_id', ondelete='CASCADE'),
+        nullable=False,
     )
     account: Mapped['AccountModel'] = relationship(  # noqa: F821
         argument='AccountModel',
         back_populates='user',
         uselist=False,
-        cascade='all, delete',
     )
 
 

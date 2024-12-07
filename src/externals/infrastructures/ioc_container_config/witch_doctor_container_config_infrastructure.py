@@ -1,5 +1,8 @@
 from witch_doctor import InjectionType, WitchDoctor
 
+from src.adapters.presenters.accounts.transfer_cash_presenter import (
+    TransferCashPresenter,
+)
 from src.adapters.presenters.auth.get_token_presenter import GetTokenPresenter
 from src.adapters.presenters.auth.jwt_presenter import JwtPresenter
 from src.adapters.presenters.users.delete_user_presenter import (
@@ -8,7 +11,13 @@ from src.adapters.presenters.users.delete_user_presenter import (
 from src.adapters.presenters.users.get_users_presenter import GetUsersPresenter
 from src.adapters.presenters.users.new_user_presenter import NewUserPresenter
 from src.adapters.presenters.users.user_presenter import UserPresenter
+from src.adapters.repositories.accounts.accounts_repository import (
+    AccountsRepository,
+)
 from src.adapters.repositories.users.user_repository import UserRepository
+from src.application.ports.presenters.accounts.i_transfer_cash_presenter import (
+    ITransferCashPresenter,
+)
 from src.application.ports.presenters.auth.i_get_token_presenter import (
     IGetTokenPresenter,
 )
@@ -25,10 +34,16 @@ from src.application.ports.presenters.users.i_new_user_presenter import (
 from src.application.ports.presenters.users.i_user_presenter import (
     IUserPresenter,
 )
+from src.application.ports.repositories.accounts.accounts_repository import (
+    IAccountsRepository,
+)
 from src.application.ports.repositories.users.i_user_repository import (
     IUserRepository,
 )
 from src.application.ports.services.token.i_token_service import ITokenService
+from src.application.ports.use_cases.accounts.i_transfer_cash_use_case import (
+    ITransferCashUseCase,
+)
 from src.application.ports.use_cases.auth.i_get_token_use_case import (
     IGetTokenUseCase,
 )
@@ -45,6 +60,9 @@ from src.application.ports.use_cases.users.i_paginated_users_use_case import (
     IPaginatedUsersUseCase,
 )
 from src.application.services.token.jwt_token_service import JwtTokenService
+from src.application.use_cases.accounts.transfer_cash_use_case import (
+    TransferCashUseCase,
+)
 from src.application.use_cases.auth.get_token_use_case import GetTokenUseCase
 from src.application.use_cases.users.delete_user_use_case import (
     DeleteUserUseCase,
@@ -115,6 +133,11 @@ class WitchDoctorContainerConfigInfrastructure(
             GetTokenUseCase,
             InjectionType.SINGLETON,
         )
+        use_cases_container(
+            ITransferCashUseCase,
+            TransferCashUseCase,
+            InjectionType.SINGLETON,
+        )
 
         return use_cases_container
 
@@ -152,6 +175,11 @@ class WitchDoctorContainerConfigInfrastructure(
         repositories_container(
             IUserRepository,
             UserRepository,
+            InjectionType.SINGLETON,
+        )
+        repositories_container(
+            IAccountsRepository,
+            AccountsRepository,
             InjectionType.SINGLETON,
         )
 
@@ -201,6 +229,11 @@ class WitchDoctorContainerConfigInfrastructure(
         presenters_container(
             IUserPresenter,
             UserPresenter,
+            InjectionType.SINGLETON,
+        )
+        presenters_container(
+            ITransferCashPresenter,
+            TransferCashPresenter,
             InjectionType.SINGLETON,
         )
 

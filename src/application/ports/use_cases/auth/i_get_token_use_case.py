@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -6,8 +6,8 @@ from src.application.data_types.dtos.jwt_dto import AccessTokenDto
 
 
 class IGetTokenUseCase(ABC):
-    @classmethod
+    @abstractmethod
     async def get_token(
-        cls, form_data: OAuth2PasswordRequestForm
+        self, form_data: OAuth2PasswordRequestForm
     ) -> AccessTokenDto:
         pass

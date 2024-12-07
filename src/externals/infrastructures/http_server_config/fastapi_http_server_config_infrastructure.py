@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from src.externals.ports.infrastructures.i_http_config_infrastructure import (
     IHttpServerConfigInfrastructure,
 )
+from src.externals.routers.accounts.router import AccountsRouter
 from src.externals.routers.auth.router import AuthRouter
 from src.externals.routers.middleware import Middleware
 from src.externals.routers.users.router import UserRouter
@@ -25,9 +26,11 @@ class FastApiHttpServerConfigInfrastructure(IHttpServerConfigInfrastructure):
         routers = list()
         user_router = UserRouter.get_user_router()
         auth_router = AuthRouter.get_auth_router()
+        accounts_router = AccountsRouter.get_accounts_router()
 
         routers.append(user_router)
         routers.append(auth_router)
+        routers.append(accounts_router)
 
         [
             self._app.include_router(router, prefix=self._root)

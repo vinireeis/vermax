@@ -4,8 +4,14 @@ from witch_doctor import WitchDoctor
 from src.adapters.ports.controllers.i_home_broker_controller import (
     IHomeBrokerController,
 )
+from src.application.data_types.requests.accounts.transfer_request import (
+    TransferCashRequest,
+)
 from src.application.data_types.requests.users.user_request import (
     NewUserRequest,
+)
+from src.application.data_types.responses.accounts.accounts_response import (
+    TransferCashResponse,
 )
 from src.application.data_types.responses.auth.token_response import (
     GetTokenResponse,
@@ -15,6 +21,9 @@ from src.application.data_types.responses.users.user_response import (
     GetPaginatedUsersResponse,
     GetUserResponse,
     NewUserResponse,
+)
+from src.application.ports.presenters.accounts.i_transfer_cash_presenter import (  # noqa: E501
+    ITransferCashPresenter,
 )
 from src.application.ports.presenters.auth.i_get_token_presenter import (
     IGetTokenPresenter,
@@ -29,6 +38,9 @@ from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
 )
 from src.application.ports.services.token.i_token_service import ITokenService
+from src.application.ports.use_cases.accounts.i_transfer_cash_use_case import (
+    ITransferCashUseCase,
+)
 from src.application.ports.use_cases.auth.i_get_token_use_case import (
     IGetTokenUseCase,
 )
@@ -124,6 +136,28 @@ class HomeBrokerController(IHomeBrokerController):
         response = (
             get_token_presenter.from_access_token_dto_to_output_response(
                 access_token_dto=dto
+            )
+        )
+        return response
+
+    @classmethod
+    @WitchDoctor.injection
+    async def transfer_cash(
+        cls,
+        jwt_token_service: ITokenService,
+        transfer_cash_use_case: ITransferCashUseCase,
+        transfer_cash_presenter: ITransferCashPresenter,
+        request: TransferCashRequest,
+        token: str,
+    ) -> TransferCashResponse:
+        await jwt_token_service.validate_token(jwt=token)
+        decoded_token_dto = await jwt_token_service.decode_token(jwt=token)
+        dto = await transfer_cash_use_case.transfer_cash(
+            decoded_token_dto=decoded_token_dto, request=request
+        )
+        response = (
+            transfer_cash_presenter.from_transaction_dto_to_output_response(
+                dto=dto
             )
         )
         return response

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from decouple import config
 
@@ -24,14 +24,16 @@ class GetTokenPresenter(IGetTokenPresenter):
         user_model: UserModel,
     ) -> UserTokenDataRequest:
         try:
+            exp = datetime.now(tz=timezone.utc) + timedelta(
+                minutes=int(config('JWT_TTL'))
+            )
+
             user_token_data_request = UserTokenDataRequest(
                 user_id=user_model.id,
                 account_id=str(user_model.account_id),
                 cpf=user_model.cpf,
                 email=user_model.email,
-                exp=(
-                    datetime.now() + timedelta(minutes=int(config('JWT_TTL')))
-                ),
+                exp=exp,
             )
 
             return user_token_data_request

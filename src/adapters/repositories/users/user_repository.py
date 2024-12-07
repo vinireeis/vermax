@@ -7,7 +7,8 @@ from src.application.ports.repositories.users.i_user_repository import (
     IUserRepository,
 )
 from src.domain.exceptions.adapters.exception import (
-    EmailOrCpfAlreadyExistsException,
+    CpfAlreadyExistsException,
+    EmailAlreadyExistsException,
     UnexpectedRepositoryException,
     UserEmailNotFoundException,
     UserNotFoundException,
@@ -42,7 +43,9 @@ class UserRepository(IUserRepository):
 
             except IntegrityError as ex:
                 logger.info(str(ex.orig))
-                raise EmailOrCpfAlreadyExistsException()
+                if bool('cpf' in ex.orig.args[0]):
+                    raise CpfAlreadyExistsException()
+                raise EmailAlreadyExistsException()
 
     @classmethod
     async def get_user_by_id(cls, user_id: int) -> UserModel:
@@ -146,5 +149,9 @@ class UserRepository(IUserRepository):
                 raise UserNotFoundException(user_id)
 
             except IntegrityError as ex:
-                logger.info(ex)
-                raise EmailOrCpfAlreadyExistsException()
+                logger.info(str(ex.orig))
+
+                if bool('cpf' in ex.orig.args[0]):
+                    raise CpfAlreadyExistsException()
+
+                raise EmailAlreadyExistsException()

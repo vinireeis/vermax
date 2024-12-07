@@ -12,14 +12,14 @@ from src.application.data_types.responses.auth.token_response import (
 
 
 class AuthRouter:
-    __router = APIRouter(tags=['Authentication'])
+    _router = APIRouter(tags=['Authentication'])
 
     @classmethod
     def get_auth_router(cls):
-        return cls.__router
+        return cls._router
 
     @staticmethod
-    @__router.post(
+    @_router.post(
         path='/token',
         status_code=HTTPStatus.CREATED,
         response_model=GetTokenResponse,

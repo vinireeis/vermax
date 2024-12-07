@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from src.application.data_types.dtos.jwt_dto import (
     AccessTokenDto,
     JwtDecodedDto,
@@ -17,7 +19,7 @@ class JwtPresenter(IJwtPresenter):
         try:
             jwt_dto = JwtDecodedDto(
                 user_id=token_decoded_raw['user_id'],
-                account_id=token_decoded_raw['account_id'],
+                account_id=UUID(token_decoded_raw['account_id']),
                 cpf=token_decoded_raw['cpf'],
                 email=token_decoded_raw['email'],
             )

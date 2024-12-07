@@ -7,6 +7,7 @@ from decouple import config
 from src.domain.models.orm.base_model import Base
 from src.domain.models.accounts.account_model import AccountModel
 from src.domain.models.users.user_model import UserModel
+from src.domain.models.transactions.transaction_model import TransactionModel
 
 
 DATABASE_URL = config("POSTGRES_STRING_CONNECTION")
