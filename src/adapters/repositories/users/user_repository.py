@@ -1,8 +1,11 @@
 from loguru import logger
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from witch_doctor import WitchDoctor
 
+from src.application.data_types.requests.users.user_request import (
+    UpdateUserRequest,
+)
 from src.application.ports.repositories.users.i_user_repository import (
     IUserRepository,
 )
@@ -127,22 +130,22 @@ class UserRepository(IUserRepository):
 
     @classmethod
     async def update_user_by_id(
-        cls, user_id: int, user_model: UserModel
-    ) -> UserModel:
+        cls, user_id: int, update_user_request: UpdateUserRequest
+    ):
         async with (
             cls._postgres_sql_alchemy_infrastructure.get_session() as session
         ):
-            statement = select(UserModel).where(UserModel.id == user_id)
             try:
-                db_result = await session.execute(statement)
-                user_db = db_result.scalar_one()
-                user_db.name = user_model.name
-                user_db.email = user_model.email
-                user_db.password = user_model.password
-                await session.commit()
-                user_db = session.refresh(user_db)
+                user_data_to_update = update_user_request.model_dump()
 
-                return user_db
+                statement = (
+                    update(UserModel)
+                    .where(UserModel.id == user_id)
+                    .values(**user_data_to_update)
+                    .returning(UserModel)
+                )
+                await session.execute(statement)
+                await session.commit()
 
             except NoResultFound as ex:
                 logger.info(ex)
@@ -150,8 +153,4 @@ class UserRepository(IUserRepository):
 
             except IntegrityError as ex:
                 logger.info(str(ex.orig))
-
-                if bool('cpf' in ex.orig.args[0]):
-                    raise CpfAlreadyExistsException()
-
                 raise EmailAlreadyExistsException()

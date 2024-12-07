@@ -26,3 +26,16 @@ class NewUserRequest(CpfValidatorMixin, BaseModel):
         if len(value) > 20:
             raise ValueError('password must be less than 20 characters')
         return value
+
+
+class UpdateUserRequest(BaseModel):
+    name: str
+    email: EmailStr
+
+    @model_validator(mode='before')
+    def validate_email_and_name_length(cls, values):
+        if 'name' in values and len(values['name']) > 100:
+            raise ValueError('nam e must be less than 100 characters')
+        if 'email' in values and len(values['email']) > 100:
+            raise ValueError('email must be less than 100 characters')
+        return values

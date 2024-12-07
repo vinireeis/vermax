@@ -11,6 +11,7 @@ from src.application.data_types.requests.accounts.transfer_request import (
     TransferCashRequest,
 )
 from src.application.data_types.responses.accounts.accounts_response import (
+    GetBalanceResponse,
     TransferCashResponse,
 )
 
@@ -30,6 +31,7 @@ class AccountsRouter:
         path='/accounts/transfer',
         status_code=HTTPStatus.OK,
         response_model=TransferCashResponse,
+        response_model_exclude_none=True,
     )
     async def transfer_cash(
         request: TransferCashRequest, token: str = Depends(_oauth2_scheme)
@@ -37,4 +39,17 @@ class AccountsRouter:
         response = await HomeBrokerController.transfer_cash(
             request=request, token=token
         )
+        return response
+
+    @staticmethod
+    @_router.get(
+        path='/accounts/balance',
+        status_code=HTTPStatus.OK,
+        response_model=GetBalanceResponse,
+        response_model_exclude_none=True,
+    )
+    async def get_balance(
+        token: str = Depends(_oauth2_scheme),
+    ) -> TransferCashResponse:
+        response = await HomeBrokerController.get_balance(token=token)
         return response

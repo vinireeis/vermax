@@ -20,3 +20,13 @@ class TransferPayload(BaseModel):
 
 class TransferCashResponse(BaseApiResponse):
     payload: TransferPayload
+
+
+class GetBalancePayload(BaseModel):
+    balance: Decimal
+    positions: dict = None
+    consolidated_balance: Decimal = None
+
+
+class GetBalanceResponse(BaseApiResponse):
+    payload: GetBalancePayload

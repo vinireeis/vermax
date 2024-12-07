@@ -9,8 +9,10 @@ from src.application.data_types.requests.accounts.transfer_request import (
 )
 from src.application.data_types.requests.users.user_request import (
     NewUserRequest,
+    UpdateUserRequest,
 )
 from src.application.data_types.responses.accounts.accounts_response import (
+    GetBalanceResponse,
     TransferCashResponse,
 )
 from src.application.data_types.responses.auth.token_response import (
@@ -21,6 +23,10 @@ from src.application.data_types.responses.users.user_response import (
     GetPaginatedUsersResponse,
     GetUserResponse,
     NewUserResponse,
+    UpdateUserResponse,
+)
+from src.application.ports.presenters.accounts.i_get_balance_presenter import (
+    IGetBalancePresenter,
 )
 from src.application.ports.presenters.accounts.i_transfer_cash_presenter import (  # noqa: E501
     ITransferCashPresenter,
@@ -37,7 +43,13 @@ from src.application.ports.presenters.users.i_get_users_presenter import (
 from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
 )
+from src.application.ports.presenters.users.i_update_user_presenter import (
+    IUpdateUserPresenter,
+)
 from src.application.ports.services.token.i_token_service import ITokenService
+from src.application.ports.use_cases.accounts.i_get_balance_use_case import (
+    IGetBalanceUseCase,
+)
 from src.application.ports.use_cases.accounts.i_transfer_cash_use_case import (
     ITransferCashUseCase,
 )
@@ -55,6 +67,9 @@ from src.application.ports.use_cases.users.i_new_user_use_case import (
 )
 from src.application.ports.use_cases.users.i_paginated_users_use_case import (
     IPaginatedUsersUseCase,
+)
+from src.application.ports.use_cases.users.i_update_user_use_case import (
+    IUpdateUserUseCase,
 )
 
 
@@ -110,6 +125,25 @@ class HomeBrokerController(IHomeBrokerController):
 
     @classmethod
     @WitchDoctor.injection
+    async def update_user_by_id(  # noqa: PLR0917, PLR0913
+        cls,
+        user_id: int,
+        token: str,
+        update_user_request: UpdateUserRequest,
+        update_user_use_case: IUpdateUserUseCase,
+        update_user_presenter: IUpdateUserPresenter,
+        jwt_token_service: ITokenService,
+    ) -> UpdateUserResponse:
+        await jwt_token_service.validate_token(jwt=token)
+        await update_user_use_case.update_user(
+            update_user_request=update_user_request, user_id=user_id
+        )
+        response = update_user_presenter.create_output_response()
+
+        return response
+
+    @classmethod
+    @WitchDoctor.injection
     async def delete_user_by_id(
         cls,
         user_id: int,
@@ -157,6 +191,27 @@ class HomeBrokerController(IHomeBrokerController):
         )
         response = (
             transfer_cash_presenter.from_transaction_dto_to_output_response(
+                dto=dto
+            )
+        )
+        return response
+
+    @classmethod
+    @WitchDoctor.injection
+    async def get_balance(
+        cls,
+        token: str,
+        jwt_token_service: ITokenService,
+        get_balance_use_case: IGetBalanceUseCase,
+        get_balance_presenter: IGetBalancePresenter,
+    ) -> GetBalanceResponse:
+        await jwt_token_service.validate_token(jwt=token)
+        decoded_token_dto = await jwt_token_service.decode_token(jwt=token)
+        dto = await get_balance_use_case.get_user_balance(
+            decoded_token_dto=decoded_token_dto
+        )
+        response = (
+            get_balance_presenter.from_transaction_dto_to_output_response(
                 dto=dto
             )
         )

@@ -8,7 +8,7 @@ from src.adapters.controllers.home_broker_controller import (
     HomeBrokerController,
 )
 from src.application.data_types.requests.users.user_request import (
-    NewUserRequest,
+    NewUserRequest, UpdateUserRequest,
 )
 from src.application.data_types.responses.users.user_response import (
     DeleteUserResponse,
@@ -81,10 +81,14 @@ class UserRouter:
         response_model_exclude_none=True,
     )
     async def update_user(
+        request: UpdateUserRequest,
         user_id: int,
         token: str = Depends(_oauth2_scheme),
     ) -> UpdateUserResponse:
-        pass
+        response = await HomeBrokerController.update_user_by_id(
+            user_id=user_id, token=token, update_user_request=request
+        )
+        return response
 
     @staticmethod
     @_router.delete(

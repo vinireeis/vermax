@@ -1,5 +1,8 @@
 from witch_doctor import InjectionType, WitchDoctor
 
+from src.adapters.presenters.accounts.get_balance_presenter import (
+    GetBalancePresenter,
+)
 from src.adapters.presenters.accounts.transfer_cash_presenter import (
     TransferCashPresenter,
 )
@@ -10,11 +13,15 @@ from src.adapters.presenters.users.delete_user_presenter import (
 )
 from src.adapters.presenters.users.get_users_presenter import GetUsersPresenter
 from src.adapters.presenters.users.new_user_presenter import NewUserPresenter
+from src.adapters.presenters.users.update_user_presenter import UpdateUserPresenter
 from src.adapters.presenters.users.user_presenter import UserPresenter
 from src.adapters.repositories.accounts.accounts_repository import (
     AccountsRepository,
 )
 from src.adapters.repositories.users.user_repository import UserRepository
+from src.application.ports.presenters.accounts.i_get_balance_presenter import (
+    IGetBalancePresenter,
+)
 from src.application.ports.presenters.accounts.i_transfer_cash_presenter import (
     ITransferCashPresenter,
 )
@@ -31,6 +38,7 @@ from src.application.ports.presenters.users.i_get_users_presenter import (
 from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
 )
+from src.application.ports.presenters.users.i_update_user_presenter import IUpdateUserPresenter
 from src.application.ports.presenters.users.i_user_presenter import (
     IUserPresenter,
 )
@@ -41,6 +49,9 @@ from src.application.ports.repositories.users.i_user_repository import (
     IUserRepository,
 )
 from src.application.ports.services.token.i_token_service import ITokenService
+from src.application.ports.use_cases.accounts.i_get_balance_use_case import (
+    IGetBalanceUseCase,
+)
 from src.application.ports.use_cases.accounts.i_transfer_cash_use_case import (
     ITransferCashUseCase,
 )
@@ -59,7 +70,11 @@ from src.application.ports.use_cases.users.i_new_user_use_case import (
 from src.application.ports.use_cases.users.i_paginated_users_use_case import (
     IPaginatedUsersUseCase,
 )
+from src.application.ports.use_cases.users.i_update_user_use_case import IUpdateUserUseCase
 from src.application.services.token.jwt_token_service import JwtTokenService
+from src.application.use_cases.accounts.get_balance_use_case import (
+    GetBalanceUseCase,
+)
 from src.application.use_cases.accounts.transfer_cash_use_case import (
     TransferCashUseCase,
 )
@@ -72,6 +87,7 @@ from src.application.use_cases.users.new_user_use_case import NewUserUseCase
 from src.application.use_cases.users.paginated_users_use_case import (
     PaginatedUsersUseCase,
 )
+from src.application.use_cases.users.update_user_use_case import UpdateUserUseCase
 from src.externals.infrastructures.api_config.api_config_infrastructure import (
     ApiConfigInfrastructure,
 )
@@ -136,6 +152,16 @@ class WitchDoctorContainerConfigInfrastructure(
         use_cases_container(
             ITransferCashUseCase,
             TransferCashUseCase,
+            InjectionType.SINGLETON,
+        )
+        use_cases_container(
+            IGetBalanceUseCase,
+            GetBalanceUseCase,
+            InjectionType.SINGLETON,
+        )
+        use_cases_container(
+            IUpdateUserUseCase,
+            UpdateUserUseCase,
             InjectionType.SINGLETON,
         )
 
@@ -234,6 +260,16 @@ class WitchDoctorContainerConfigInfrastructure(
         presenters_container(
             ITransferCashPresenter,
             TransferCashPresenter,
+            InjectionType.SINGLETON,
+        )
+        presenters_container(
+            IGetBalancePresenter,
+            GetBalancePresenter,
+            InjectionType.SINGLETON,
+        )
+        presenters_container(
+            IUpdateUserPresenter,
+            UpdateUserPresenter,
             InjectionType.SINGLETON,
         )
 

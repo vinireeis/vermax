@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 
+from src.application.data_types.requests.users.user_request import (
+    UpdateUserRequest,
+)
 from src.domain.models.users.user_model import PaginatedUsersModel, UserModel
 
 
@@ -29,8 +32,8 @@ class IUserRepository(ABC):
     @classmethod
     @abstractmethod
     async def update_user_by_id(
-        cls, user_id: int, user_model: UserModel
-    ) -> UserModel:
+        cls, user_id: int, update_user_request: UpdateUserRequest
+    ):
         pass
 
     @classmethod

@@ -19,7 +19,7 @@ class UserPayload(BaseModel):
 
 
 class PaginatedUsersPayload(BaseModel):
-    users: list[UserPayload] = Field(default=list)
+    users: list[UserPayload] = Field(default_factory=list)
     total: int
     limit: int
     offset: int
