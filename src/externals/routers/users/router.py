@@ -8,7 +8,8 @@ from src.adapters.controllers.home_broker_controller import (
     HomeBrokerController,
 )
 from src.application.data_types.requests.users.user_request import (
-    NewUserRequest, UpdateUserRequest,
+    NewUserRequest,
+    UpdateUserRequest,
 )
 from src.application.data_types.responses.users.user_response import (
     DeleteUserResponse,

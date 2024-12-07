@@ -13,7 +13,9 @@ from src.adapters.presenters.users.delete_user_presenter import (
 )
 from src.adapters.presenters.users.get_users_presenter import GetUsersPresenter
 from src.adapters.presenters.users.new_user_presenter import NewUserPresenter
-from src.adapters.presenters.users.update_user_presenter import UpdateUserPresenter
+from src.adapters.presenters.users.update_user_presenter import (
+    UpdateUserPresenter,
+)
 from src.adapters.presenters.users.user_presenter import UserPresenter
 from src.adapters.repositories.accounts.accounts_repository import (
     AccountsRepository,
@@ -38,7 +40,9 @@ from src.application.ports.presenters.users.i_get_users_presenter import (
 from src.application.ports.presenters.users.i_new_user_presenter import (
     INewUserPresenter,
 )
-from src.application.ports.presenters.users.i_update_user_presenter import IUpdateUserPresenter
+from src.application.ports.presenters.users.i_update_user_presenter import (
+    IUpdateUserPresenter,
+)
 from src.application.ports.presenters.users.i_user_presenter import (
     IUserPresenter,
 )
@@ -70,7 +74,9 @@ from src.application.ports.use_cases.users.i_new_user_use_case import (
 from src.application.ports.use_cases.users.i_paginated_users_use_case import (
     IPaginatedUsersUseCase,
 )
-from src.application.ports.use_cases.users.i_update_user_use_case import IUpdateUserUseCase
+from src.application.ports.use_cases.users.i_update_user_use_case import (
+    IUpdateUserUseCase,
+)
 from src.application.services.token.jwt_token_service import JwtTokenService
 from src.application.use_cases.accounts.get_balance_use_case import (
     GetBalanceUseCase,
@@ -87,7 +93,9 @@ from src.application.use_cases.users.new_user_use_case import NewUserUseCase
 from src.application.use_cases.users.paginated_users_use_case import (
     PaginatedUsersUseCase,
 )
-from src.application.use_cases.users.update_user_use_case import UpdateUserUseCase
+from src.application.use_cases.users.update_user_use_case import (
+    UpdateUserUseCase,
+)
 from src.externals.infrastructures.api_config.api_config_infrastructure import (
     ApiConfigInfrastructure,
 )
