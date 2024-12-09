@@ -11,7 +11,7 @@ RUN apt-get update && \
     pip install --no-cache-dir poetry && \
     poetry config virtualenvs.create false
 
-RUN poetry install --no-root --no-dev
+RUN poetry install --no-root
 
 COPY . .
 

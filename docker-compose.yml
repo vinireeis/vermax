@@ -26,6 +26,7 @@ services:
     container_name: vermax-api
     command: >
       sh -c "
+      poetry run pytest --asyncio-mode=auto --cov=src/services --cov-report=term-missing &&
       alembic upgrade head &&
       poetry run python3 main.py"
     ports:
